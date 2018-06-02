@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {newMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 const app = express();
@@ -19,26 +20,14 @@ io.on('connection', (socket) => {
         console.log('User was disconnected');
     });
 
-    socket.emit('replyMessage', {
-        text: 'This must work',
-        from: 'Admin',
-        _createdAt: new Date().toString()
-    });
+    socket.emit('replyMessage', newMessage('Admin','Welcome to chat App'));
 
-    socket.broadcast.emit('replyMessage',{
-        text: 'Admin',
-        from: 'New user joined',
-        _createdAt: new Date().toString()
-    })
+    socket.broadcast.emit('replyMessage',newMessage('Admin','New User Joined'));
 
     socket.on('newMessage', (messgae) => {
         console.log('new Message', messgae);
 
-        io.emit('replyMessage', {
-            text: messgae.text,
-            from: messgae.from,
-            _createdAt: new Date().toString()
-        });
+        io.emit('replyMessage',newMessage(messgae.from , messgae.text));
 
     });
 
