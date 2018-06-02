@@ -24,11 +24,11 @@ io.on('connection', (socket) => {
 
     socket.broadcast.emit('replyMessage',newMessage('Admin','New User Joined'));
 
-    socket.on('newMessage', (messgae) => {
-        console.log('new Message', messgae);
+    socket.on('newMessage', (message, callback) => {
+        console.log('new Message', message);
 
-        io.emit('replyMessage',newMessage(messgae.from , messgae.text));
-
+        io.emit('replyMessage',newMessage(message.from , message.text));
+        callback(); 
     });
 
     socket.on('createLocationMessage',(coords)=>{
